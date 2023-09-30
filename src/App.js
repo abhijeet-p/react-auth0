@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Profile from "./Profile";
+import Home from "./Home";
+import Nav from "./Nav";
+import Auth from "./auth/Auth";
+import { useHistory } from "react-router-dom";
+import Callback from "./Callback";
 
 function App() {
+  const history = useHistory();
+  const handleAuthRedirect = (path) => {
+    history.push(path);
+  };
+  const auth = new Auth(history, handleAuthRedirect);
+
+  // Perform any necessary initialization or side effects with auth
+  useEffect(() => {
+    // For example, we might want to initialize authentication here
+    // auth.init();
+  }, [auth]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Nav />
+        <Switch>
+          <Route path="/Profile" component={Profile} />
+          <Route
+            path="/callback"
+            render={(props) => <Callback auth={auth} {...props} />}
+          />
+          <Route path="/" render={(props) => <Home auth={auth} {...props} />} />
+        </Switch>
+      </Router>
+    </>
   );
 }
 
